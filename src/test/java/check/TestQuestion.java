@@ -14,7 +14,7 @@ import pageobject.HomePage;
 
 @RunWith(Parameterized.class)
 public class TestQuestion {
-    public ChromeDriver driver;
+    public static ChromeDriver driver;
     public static HomePage objHomePage;
     private final String checkedText;
     private final int index;
@@ -37,21 +37,37 @@ public class TestQuestion {
                 {"Да, обязательно. Всем самокатов! И Москве, и Московской области.", 7}
         };
     }
+    @Before
+    public void setup() {
+
+        ChromeOptions options = new ChromeOptions();
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\ebogdanova.OPENINTEGRATION\\WebDriver\\bin\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
+        driver = new ChromeDriver(options);
+        driver.get("https://qa-scooter.praktikum-services.ru/");
+        HomePage objHomePage = new HomePage(driver);
+        objHomePage.getCookie().click();
+
+    }
 
     @Test
     public void checkingQuestions() {
 
-        ChromeOptions options = new ChromeOptions();
+        /*ChromeOptions options = new ChromeOptions();
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\ebogdanova.OPENINTEGRATION\\WebDriver\\bin\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver(options);
+        driver = new ChromeDriver(options);
         driver.get("https://qa-scooter.praktikum-services.ru/");
         HomePage objHomePage = new HomePage(driver);
-        objHomePage.getCookie().click();
+        objHomePage.getCookie().click();*/
         objHomePage.getQuestion().click();
         objHomePage.click((WebElement)objHomePage.getListQuestions().get(this.index));
         MatcherAssert.assertThat(((WebElement)objHomePage.getListAnswers().get(this.index)).getText(), JUnitMatchers.containsString(this.checkedText));
-        driver.quit();
+        //driver.quit();
 
+    }
+
+    @After
+    public void teardown() {
+        driver.quit();
     }
 
 }
